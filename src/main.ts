@@ -68,3 +68,40 @@ async function getActress(id: number): Promise<Actress | null> {
     return null;
   }
 }
+
+async function getAllActresses(): Promise<Actress[]> {
+  try {
+    const response = await fetch(`http://localhost:3333/actresses`);
+    if (!response.ok) {
+      throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
+    }
+    const dati: unknown = await response.json();
+    if (!(dati instanceof Array)) {
+      throw new Error(`Formato dei dati non valido`);
+    }
+    const attrciValide: Actress[] = dati.filter(isActress);
+    return attrciValide;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("errore durante il recupero dell'attorici: ", error);
+    } else {
+      console.error("errore sconosciuto:", error);
+    }
+    return [];
+  }
+}
+
+async function getActresses(ids: number[]): Promise<(Actress | null)[]> {
+  try {
+    const promisies = ids.map((id) => getActress(id));
+    const actresses = await Promise.all(promisies);
+    return actresses;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("errore durante il recupero delle attrici: ", error);
+    } else {
+      console.error("errore sconosciuto:", error);
+    }
+    return [];
+  }
+}
