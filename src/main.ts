@@ -7,21 +7,37 @@ type Person = {
   image: string;
 };
 
+type ActressNationality =
+  | "American"
+  | "British"
+  | "Australian"
+  | " Israeli-American"
+  | "South African"
+  | "French"
+  | "Indian"
+  | "Israeli"
+  | "Spanish"
+  | " South Korean"
+  | "Chinese";
+
 type Actress = Person & {
   most_famous_movies: [string, string, string];
   awards: string;
-  nationality:
-    | "American"
-    | "British"
-    | "Australian"
-    | " Israeli-American"
-    | "South African"
-    | "French"
-    | "Indian"
-    | "Israeli"
-    | "Spanish"
-    | " South Korean"
-    | "Chinese";
+  nationality: ActressNationality;
+};
+
+type ActorNationality =
+  | ActressNationality
+  | "New Zeland"
+  | "Hong Kong"
+  | "German"
+  | "Canadian"
+  | "irish";
+
+type Actor = Person & {
+  known_for: [string, string, string];
+  awards: [string] | [string, string];
+  nationality: ActorNationality;
 };
 
 function isActress(dati: unknown): dati is Actress {
@@ -104,4 +120,21 @@ async function getActresses(ids: number[]): Promise<(Actress | null)[]> {
     }
     return [];
   }
+}
+
+function createActress(data: Omit<Actress, "id">): Actress {
+  return {
+    ...data,
+    id: Math.floor(Math.random() * 1000),
+  };
+}
+
+function updateActress(
+  actress: Actress,
+  update: Partial<Omit<Actress, "id" | "name">>
+): Actress {
+  return {
+    ...actress,
+    ...update,
+  };
 }
